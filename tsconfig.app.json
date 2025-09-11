@@ -10,7 +10,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/app/layout/layouts/empty/empty.component", "src/app/layout/layouts/empty/empty.module.ts"  ],
   "exclude": [
     "src/**/*.spec.ts"
   ]
