@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
 @NgModule({
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, BrowserModule],
-  exports: [CommonModule, FormsModule, ReactiveFormsModule, BrowserModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  exports: [CommonModule, FormsModule, ReactiveFormsModule],
 })
 export class SharedModule {}
