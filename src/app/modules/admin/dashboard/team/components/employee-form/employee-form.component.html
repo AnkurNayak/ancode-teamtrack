@@ -1,0 +1,112 @@
+<div class="flex flex-col">
+  <div class="flex p-4 w-full justify-between items-center">
+    <div>
+      <h4 class="text-lg font-medium">Add Member</h4>
+      <p class="text-xs text-gray-500">Fill in the details below to add a new team member.</p>
+    </div>
+
+    <button
+      (click)="closeDialog()"
+      class="flex rounded-full h-8 w-8 items-center justify-center hover:bg-accent cursor-pointer"
+      type="button"
+    >
+      <mat-icon svgIcon="heroicons_outline:x"></mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="p-4 space-y-4">
+    <!-- Name -->
+    <div class="flex flex-col border">
+      <label for="name" class="form-label"> Name <span class="text-red-500">*</span> </label>
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        placeholder="Enter full name"
+        autocomplete="name"
+        class="form-input"
+        [class.error]="isFieldInvalid('name')"
+        [class.success]="name?.valid && name?.touched"
+      />
+      @if (isFieldInvalid('name')){
+      <div class="error-message">
+        {{ getErrorMessage('name') }}
+      </div>
+      }
+    </div>
+
+    <!-- Email -->
+    <div>
+      <label for="email" class="form-label"> Email <span class="text-red-500">*</span> </label>
+      <input
+        id="email"
+        type="email"
+        formControlName="email"
+        placeholder="Enter email address"
+        autocomplete="email"
+        class="form-input"
+        [class.error]="isFieldInvalid('email')"
+        [class.success]="email?.valid && email?.touched"
+      />
+      @if (isFieldInvalid('email')){
+      <div class="error-message">
+        {{ getErrorMessage('email') }}
+      </div>
+      }
+    </div>
+
+    <!-- Department -->
+    <div>
+      <label for="department" class="form-label">
+        Department <span class="text-red-500">*</span>
+      </label>
+      <select
+        id="department"
+        formControlName="department"
+        class="form-select"
+        [class.error]="isFieldInvalid('department')"
+        [class.success]="department?.valid && department?.touched"
+      >
+        <option value="" disabled>Select department</option>
+        <option *ngFor="let dept of departments" [value]="dept.value">
+          {{ dept.label }}
+        </option>
+      </select>
+      <div class="error-message" *ngIf="isFieldInvalid('department')">
+        {{ getErrorMessage('department') }}
+      </div>
+    </div>
+
+    <!-- Date of Joining -->
+    <div>
+      <label for="dateOfJoining" class="form-label">
+        Date of Joining <span class="text-red-500">*</span>
+      </label>
+      <input
+        id="dateOfJoining"
+        type="date"
+        formControlName="dateOfJoining"
+        [max]="getCurrentDate()"
+        class="form-input"
+        [class.error]="isFieldInvalid('dateOfJoining')"
+        [class.success]="dateOfJoining?.valid && dateOfJoining?.touched"
+      />
+      <div class="error-message" *ngIf="isFieldInvalid('dateOfJoining')">
+        {{ getErrorMessage('dateOfJoining') }}
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+      <button type="button" (click)="closeDialog()">Cancel</button>
+      <button
+        type="submit"
+        [disabled]="employeeForm.invalid"
+        class="btn btn-primary"
+        [class.disabled]="employeeForm.invalid"
+      >
+        Add Member
+      </button>
+    </div>
+  </form>
+</div>

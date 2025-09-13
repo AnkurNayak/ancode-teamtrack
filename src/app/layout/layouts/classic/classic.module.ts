@@ -4,10 +4,11 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from 'app/shared/shared.module';
 import { NavigationModule } from '@ancode/components/navigation/navigation.module';
 import { HeaderModule } from '@ancode/components/header/header.module';
+import { DialogModule } from '@ancode/components/dialog/dialog.module';
 
 @NgModule({
   declarations: [ClassicLayoutComponent],
-  imports: [RouterModule, SharedModule, NavigationModule, HeaderModule],
+  imports: [RouterModule, SharedModule, NavigationModule, HeaderModule, DialogModule],
   exports: [ClassicLayoutComponent],
 })
 export class ClassicLayoutModule {}

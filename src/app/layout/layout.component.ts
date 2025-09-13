@@ -1,6 +1,6 @@
 import { LayoutConfigService, AppConfig } from '@ancode/services/common/config.service';
+import { IconService } from '@ancode/services/common/icons.service';
 import { Component, DOCUMENT, Inject, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { Layout } from 'app/layout/layout.types';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
@@ -19,8 +19,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
    */
   constructor(
     private _LayoutConfigService: LayoutConfigService,
-    @Inject(DOCUMENT) private _document: any
+    private _iconService: IconService
   ) {
+    this._iconService.registerIcons();
     this.config = this._LayoutConfigService.defaultConfig;
   }
 
@@ -31,15 +32,8 @@ export class LayoutComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((config: AppConfig) => {
         this.config = config;
-        this._updateTheme();
+        this._LayoutConfigService.updateTheme();
       });
-  }
-
-  /* Update theme */
-  private _updateTheme(): void {
-    const body = this._document.body;
-    body.classList.remove('light', 'dark');
-    body.classList.add(this.config.theme);
   }
 
   ngOnDestroy(): void {

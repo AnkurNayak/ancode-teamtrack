@@ -5,21 +5,20 @@
   >
     <mat-icon>menu</mat-icon>
   </button>
-  <div>
-    @if (theme === 'dark') {
-    <button
-      (click)="switchTheme('light')"
-      class="flex items-center justify-center cursor-pointer h-8 w-8 rounded-full bg-accent border"
-    >
-      <mat-icon>light_mode</mat-icon>
-    </button>
-    } @else {
-    <button
-      (click)="switchTheme('dark')"
-      class="flex items-center justify-center cursor-pointer h-8 w-8 rounded-full bg-accent border"
-    >
-      <mat-icon class="">dark_mode</mat-icon>
-    </button>
-    }
-  </div>
+
+  @if (theme === 'dark') {
+  <button
+    (click)="switchTheme('light')"
+    class="flex items-center justify-center cursor-pointer h-8 w-8 rounded-full bg-accent border"
+  >
+    <mat-icon svgIcon="heroicons_outline:sun" class="!h-5 !w-5" />
+  </button>
+  } @else {
+  <button
+    (click)="switchTheme('dark')"
+    class="flex items-center justify-center cursor-pointer h-8 w-8 rounded-full bg-accent border"
+  >
+    <mat-icon svgIcon="heroicons_outline:moon" class="!h-5 !w-5" />
+  </button>
+  }
 </div>

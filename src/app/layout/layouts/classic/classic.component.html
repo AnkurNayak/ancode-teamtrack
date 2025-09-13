@@ -1,5 +1,13 @@
 <navigation></navigation>
+@if (isDialogOpen){
+<app-dialog>
+  <ng-container *ngComponentOutlet="dialogContent$ | async"></ng-container>
+</app-dialog>
+}
+
 <div class="flex flex-col flex-auto w-full min-w-0">
-    <app-header></app-header>
-    <div class="h-full"><router-outlet></router-outlet></div>
+  <app-header></app-header>
+  <div class="h-full overflow-y-auto" style="max-height: calc(100vh - 64px)">
+    <router-outlet></router-outlet>
+  </div>
 </div>
