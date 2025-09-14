@@ -1,19 +1,57 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
+export interface SortEvent {
+  column: string;
+  direction: 'asc' | 'desc';
+}
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
-  styleUrl: './table.component.scss',
   standalone: false,
 })
 export class TableComponent {
-  @Input() columns: { key: string; label: string; type?: string }[] = [];
+  @Input() columns: { key: string; label: string; type?: string; sortable?: boolean }[] = [];
   @Input() rows: any[] = [];
+  @Input() sortKey: string | null = null;
+  @Input() sortOrder: 'asc' | 'desc' = 'asc';
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();
+  @Output() sort = new EventEmitter<SortEvent>();
 
   selectedRows = new Set<number>();
   actionRowId: string | null = null;
+
+  onSort(column: string) {
+    if (!this.isColumnSortable(column)) return;
+
+    let direction: 'asc' | 'desc';
+    if (this.sortKey === column) {
+      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+      direction = this.sortOrder;
+    } else {
+      this.sortKey = column;
+      this.sortOrder = 'desc';
+      direction = 'desc';
+    }
+    // console.log(column, direction);
+    this.sort.emit({ column, direction });
+  }
+  isColumnSortable(columnKey: string): boolean {
+    const column = this.columns.find((col) => col.key === columnKey);
+    return column?.sortable === true;
+  }
+
+  getSortIcon(columnKey: string): string {
+    if (this.sortKey !== columnKey || !this.isColumnSortable(columnKey)) {
+      return 'heroicons_outline:sort-ascending';
+    }
+    if (this.sortOrder === 'asc') {
+      return 'heroicons_outline:sort-ascending';
+    } else if (this.sortOrder === 'desc') {
+      return 'heroicons_outline:sort-descending';
+    }
+    return 'heroicons_outline:sort-ascending';
+  }
 
   hasActions(): boolean {
     return true;

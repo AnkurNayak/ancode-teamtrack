@@ -58,8 +58,11 @@
       <app-table
         [columns]="tableCols"
         [rows]="tableRows"
+        [sortKey]="currentSortKey"
+        [sortOrder]="currentSortOrder"
         (edit)="openEditMode($event)"
         (delete)="openDeleteDialog($event)"
+        (sort)="onTableSort($event)"
       ></app-table>
     </div>
   </div>

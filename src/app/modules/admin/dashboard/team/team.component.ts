@@ -5,6 +5,7 @@ import { EmployeeFormComponent } from './components/employee-form/employee-form.
 import { EmployeeService } from './team.service';
 import { Employee } from './team.types';
 import { format, parseISO } from 'date-fns';
+import { SortEvent } from '@ancode/components/table/table.component';
 
 @Component({
   selector: 'employees',
@@ -25,10 +26,10 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
   ];
 
   tableCols = [
-    { key: 'name', label: 'Name' },
+    { key: 'name', label: 'Name', sortable: true },
     { key: 'email', label: 'Email' },
     { key: 'department', label: 'Department', type: 'badge' },
-    { key: 'dateOfJoining', label: 'Date of Joining' },
+    { key: 'dateOfJoining', label: 'Date of Joining', sortable: true },
     { key: 'createdAt', label: 'Created' },
     { key: 'updatedAt', label: 'Updated' },
   ];
@@ -36,6 +37,9 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectedDepartments: string[] = [];
   searchInput: string = '';
+
+  currentSortKey: string | null = null;
+  currentSortOrder: 'asc' | 'desc' = 'asc';
 
   private _unsubscribeAll: Subject<void> = new Subject<void>();
 
@@ -54,6 +58,16 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this._unsubscribeAll.next();
     this._unsubscribeAll.complete();
+  }
+
+  onTableSort(event: SortEvent): void {
+    const { column } = event;
+    if (this.currentSortKey === column) {
+      this.currentSortOrder = this.currentSortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.currentSortKey = column;
+      this.currentSortOrder = 'desc';
+    }
   }
 
   /* Employee list*/

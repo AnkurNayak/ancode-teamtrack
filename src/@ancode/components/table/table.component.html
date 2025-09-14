@@ -7,8 +7,24 @@
         </th>
 
         @for (column of columns; track column.key) { @if (column.key !== 'Select') {
-        <th class="text-left font-semibold text-sm px-4 border-b">
-          {{ column.label }}
+        <th
+          class="text-left font-semibold text-sm px-4 border-b"
+          [class.cursor-pointer]="column.sortable"
+          [class.hover:bg-muted]="column.sortable"
+          (click)="onSort(column.key)"
+        >
+          <div class="flex items-center gap-1">
+            <span class="flex items-center gap-2">
+              {{ column.label }}
+              @if (column.sortable) {
+              <mat-icon
+                [svgIcon]="getSortIcon(column.key)"
+                class="!h-4 !w-4 !mt-2"
+                [class.text-primary]="sortKey === column.key"
+              />
+              }</span
+            >
+          </div>
         </th>
         } }
         <th class="text-left font-semibold text-sm px-4 border-b">Actions</th>
@@ -22,10 +38,10 @@
           class="text-center p-4 text-gray-500 text-xl italic"
           [attr.colspan]="columns.length + 2"
         >
-          <span class="flex items-center justify-center gap-2"
-            ><mat-icon svgIcon="heroicons_outline:database" class="!h-12 !w-12" /> No records
-            found</span
-          >
+          <span class="flex items-center justify-center gap-2">
+            <mat-icon svgIcon="heroicons_outline:database" class="!h-12 !w-12" />
+            No records found
+          </span>
         </td>
       </tr>
       } @else { @for (row of rows; track row.id; let isLast = $last) {
@@ -66,13 +82,15 @@
               <span
                 class="px-4 py-2 flex hover:bg-accent rounded-sm text-sm gap-1 font-medium items-center"
                 (click)="onEdit(row)"
-                ><mat-icon svgIcon="heroicons_outline:pencil-alt" class="!h-4 !w-4" /> Edit</span
               >
+                <mat-icon svgIcon="heroicons_outline:pencil-alt" class="!h-4 !w-4" /> Edit
+              </span>
               <span
                 class="px-4 py-2 flex hover:bg-accent rounded-sm text-sm gap-1 font-medium items-center text-red-500"
                 (click)="onDelete(row)"
-                ><mat-icon svgIcon="heroicons_outline:trash" class="!h-4 !w-4" /> Delete</span
               >
+                <mat-icon svgIcon="heroicons_outline:trash" class="!h-4 !w-4" /> Delete
+              </span>
             </div>
             }
           </button>
