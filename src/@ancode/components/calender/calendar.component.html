@@ -1,0 +1,40 @@
+<div class="calendar-container bg-card border" [class.open]="isOpen">
+  <!-- Calendar Header -->
+  <div class="calendar-header">
+    <button type="button" class="nav-button" (click)="previousMonth()" [disabled]="disabled">
+      <mat-icon svgIcon="heroicons_outline:chevron-left" class="!h-4 !w-4"></mat-icon>
+    </button>
+
+    <div class="month-year">
+      {{ format(currentMonth, 'MMMM yyyy') }}
+    </div>
+
+    <button type="button" class="nav-button" (click)="nextMonth()" [disabled]="disabled">
+      <mat-icon svgIcon="heroicons_outline:chevron-right" class="!h-4 !w-4"></mat-icon>
+    </button>
+  </div>
+
+  <!-- Days of Week Header -->
+  <div class="days-header">
+    <div class="day-header" *ngFor="let day of daysOfWeek">
+      {{ day }}
+    </div>
+  </div>
+
+  <!-- Calendar Grid -->
+  <div class="calendar-grid">
+    <button
+      type="button"
+      class="calendar-day"
+      *ngFor="let day of calendarDays; trackBy: trackByDate"
+      [class.other-month]="!isSameMonth(day, currentMonth)"
+      [class.today]="isToday(day)"
+      [class.selected]="selectedDate && isSameDay(day, selectedDate)"
+      [class.disabled]="isDateDisabled(day)"
+      (click)="selectDate(day)"
+      [disabled]="disabled || isDateDisabled(day)"
+    >
+      {{ format(day, 'd') }}
+    </button>
+  </div>
+</div>

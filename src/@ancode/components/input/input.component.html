@@ -1,0 +1,110 @@
+<div class="form-input-wrapper">
+  <label [for]="inputId" class="font-medium">
+    {{ config.label }}
+    @if (isRequired) {
+    <span class="text-red-500">*</span>
+    }
+  </label>
+
+  @switch (config.type) { @case ('text') {
+  <div class="input-with-icon" [class.has-icon]="config.icon">
+    @if (config.icon) {
+    <mat-icon [svgIcon]="config.icon" class="!text-primary"></mat-icon>
+    }
+    <input
+      [id]="inputId"
+      type="text"
+      class="w-full"
+      [placeholder]="config.placeholder || ''"
+      [value]="value"
+      [disabled]="disabled"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+      [class.error]="hasError"
+      [class.success]="hasSuccess"
+    />
+  </div>
+  } @case ('email') {
+  <div class="input-with-icon" [class.has-icon]="config.icon">
+    @if (config.icon) {
+    <mat-icon [svgIcon]="config.icon" class="!text-primary"></mat-icon>
+    }
+    <input
+      [id]="inputId"
+      type="email"
+      class="w-full"
+      [placeholder]="config.placeholder || ''"
+      [value]="value"
+      [disabled]="disabled"
+      (input)="onInput($event)"
+      (blur)="onBlur()"
+      [class.error]="hasError"
+      [class.success]="hasSuccess"
+    />
+  </div>
+  } @case ('dropdown') {
+  <div class="relative">
+    <button
+      [id]="inputId"
+      type="button"
+      class="dropdown-select font-medium"
+      [disabled]="disabled"
+      [class.error]="hasError"
+      [class.success]="hasSuccess"
+      (click)="toggleDropdown($event)"
+    >
+      <span>{{ selectedOptionLabel || config.placeholder || 'Select an option' }}</span>
+      <mat-icon svgIcon="heroicons_outline:chevron-down" class="ml-auto !h-4 !w-4"></mat-icon>
+    </button>
+
+    @if (isDropDownOpen) {
+    <div class="dropdown-menu">
+      <div class="overflow-y-auto h-full p-2">
+        @for (option of config.options; track option.value) {
+        <button
+          type="button"
+          class="w-full text-left px-3 py-2 hover:bg-accent rounded-md transition-colors font-medium"
+          (click)="selectOption(option)"
+        >
+          {{ option.label }}
+        </button>
+        }
+      </div>
+    </div>
+    }
+  </div>
+  } @case ('date') {
+  <div class="relative">
+    <button
+      [id]="inputId"
+      type="button"
+      class="dropdown-select font-medium"
+      [disabled]="disabled"
+      [class.error]="hasError"
+      [class.success]="hasSuccess"
+      (click)="toggleCalendar($event)"
+    >
+      <span>{{ selectedDateLabel || config.placeholder || 'Select date' }}</span>
+      <mat-icon svgIcon="heroicons_outline:calendar" class="ml-auto !h-4 !w-4"></mat-icon>
+    </button>
+
+    @if (isCalendarOpen) {
+    <div class="calendar-dropdown">
+      <app-calendar
+        [selectedDate]="selectedDate"
+        [disabled]="disabled"
+        [isOpen]="isCalendarOpen"
+        [maxDate]="config.maxDate || null"
+        [minDate]="config.minDate || null"
+        (dateSelected)="onDateSelected($event)"
+        (calendarClosed)="closeCalendar()"
+      />
+    </div>
+    }
+  </div>
+  }} @if (hasError && showErrors) {
+  <div class="error-message">
+    {{ errorMessage }}
+  </div>
+  }
+</div>

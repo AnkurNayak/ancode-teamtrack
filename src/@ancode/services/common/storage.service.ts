@@ -40,6 +40,18 @@ export class StorageService {
     }
   }
 
+  removeItemFromArr(storageKey: string, storageProp: string, input: string): void {
+    if (this._isStorageAvl()) {
+      try {
+        const currentArray = this.getItem(storageKey) || [];
+        const updatedArray = currentArray.filter((item: any) => item[storageProp] !== input);
+        this.setItem(storageKey, updatedArray);
+      } catch (err) {
+        console.error('Failed to remove entries containing text from local storage', err);
+      }
+    }
+  }
+
   clear(): void {
     if (this._isStorageAvl()) {
       try {

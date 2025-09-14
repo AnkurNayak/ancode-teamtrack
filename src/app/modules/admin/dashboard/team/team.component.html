@@ -1,5 +1,8 @@
-<div class="flex flex-col h-full w-full">
-  <div class="flex w-full items-center justify-between p-4 flex-col sm:flex-row gap-2">
+<div
+  class="flex flex-col w-full overflow-hidden"
+  style="height: calc(100vh - 64px); max-height: calc(100vh - 64px)"
+>
+  <div class="flex w-full items-center justify-between p-4 sm:p-6 flex-col sm:flex-row gap-2">
     <div class="flex flex-col">
       <h1 class="text-3xl font-bold">Team Management</h1>
       <p class="text-gray-500">Manage your team members and their roles</p>
@@ -11,14 +14,53 @@
       <mat-icon svgIcon="heroicons_outline:plus" class="!h-4" /> Add Member
     </button>
   </div>
-  <div class="p-4 flex flex-col space-y-4">
-    <div class="flex items-center">
-      <app-search></app-search>
-      <div class="flex items-center">filter sort</div>
+  <div class="p-4 sm:p-6 flex flex-col space-y-4">
+    <div class="flex items-center gap-4">
+      <app-search
+        [searchInput]="searchInput"
+        (searchInputChange)="onSearchChange($event)"
+      ></app-search>
+      <div class="relative">
+        <button
+          class="flex items-center h-10 px-2 rounded-lg bg-primary text-white hover:bg-primary/90 cursor-pointer"
+          style="min-width: fit-content"
+          (click)="openFilter()"
+        >
+          <mat-icon svgIcon="heroicons_outline:adjustments" class="!h-4" />
+        </button>
+        <div
+          class="absolute border min-w-48 right-0 top-full rounded-lg bg-card flex flex-col shadow-lg z-50 filter-dropdown"
+          [class.open]="isFilterOpen"
+        >
+          <h4 class="uppercase font-semibold border-b px-4 py-2">Filter By</h4>
+          <div class="p-1 flex w-full flex-col max-h-64 overflow-y-auto">
+            @for (department of departMents; track department.value) {
+            <label
+              class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded cursor-pointer"
+            >
+              <input
+                type="checkbox"
+                name="department"
+                [value]="department.value"
+                (change)="onDepartmentSelect($event)"
+                class="rounded"
+              />
+              <span class="text-sm font-medium mb-0.5">{{ department.label }}</span>
+            </label>
+            }
+          </div>
+        </div>
+      </div>
     </div>
-
-    <div class="flex flex-col">
-      <app-table></app-table>
+  </div>
+  <div class="flex flex-col flex-1 overflow-hidden p-4 sm:px-6">
+    <div class="flex-auto overflow-auto scrollable">
+      <app-table
+        [columns]="tableCols"
+        [rows]="tableRows"
+        (edit)="openEditMode($event)"
+        (delete)="openDeleteDialog($event)"
+      ></app-table>
     </div>
   </div>
 </div>

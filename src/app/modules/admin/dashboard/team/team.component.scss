@@ -1,0 +1,15 @@
+.filter-dropdown {
+  opacity: 0;
+  transform: translateY(-10px) scale(0.95);
+  transform-origin: center;
+  transition: all 0.1s ease-out;
+  visibility: hidden;
+  pointer-events: none;
+
+  &.open {
+    opacity: 1;
+    transform: translateY(4px) scale(1);
+    visibility: visible;
+    pointer-events: all;
+  }
+}

@@ -1,1 +1,10 @@
-<div>Searchbar</div>
+<div class="flex gap-2 h-10 items-center rounded-lg border w-full px-2 searchbar">
+  <mat-icon svgIcon="heroicons_outline:search" class="!h-5" />
+  <input
+    type="text"
+    class="w-full"
+    [value]="searchInput"
+    (input)="onChange($event)"
+    placeholder="Search..."
+  />
+</div>

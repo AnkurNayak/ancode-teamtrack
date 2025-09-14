@@ -1,7 +1,10 @@
 <div class="flex flex-col">
-  <div class="flex p-4 w-full justify-between items-center">
+  <div class="flex pt-6 px-6 w-full justify-between items-center">
     <div>
-      <h4 class="text-lg font-medium">Add Member</h4>
+      <div class="flex items-center gap-2">
+        <mat-icon svgIcon="heroicons_outline:user-add" class="!text-primary" />
+        <h4 class="text-xl font-medium">Add Team Member</h4>
+      </div>
       <p class="text-xs text-gray-500">Fill in the details below to add a new team member.</p>
     </div>
 
@@ -14,98 +17,70 @@
     </button>
   </div>
 
-  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="p-4 space-y-4">
-    <!-- Name -->
-    <div class="flex flex-col border">
-      <label for="name" class="form-label"> Name <span class="text-red-500">*</span> </label>
-      <input
-        id="name"
-        type="text"
-        formControlName="name"
-        placeholder="Enter full name"
-        autocomplete="name"
-        class="form-input"
-        [class.error]="isFieldInvalid('name')"
-        [class.success]="name?.valid && name?.touched"
-      />
-      @if (isFieldInvalid('name')){
-      <div class="error-message">
-        {{ getErrorMessage('name') }}
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="p-6">
+    <div class="space-y-4">
+      <div class="border-b pb-2 text-sm flex items-center gap-2 text-gray-600 dark:text-gray-300">
+        <mat-icon
+          svgIcon="heroicons_outline:user"
+          class="!text-gray-600 dark:!text-gray-300 !h-4"
+        />
+        <p class="uppercase">Personal Information</p>
       </div>
-      }
-    </div>
 
-    <!-- Email -->
-    <div>
-      <label for="email" class="form-label"> Email <span class="text-red-500">*</span> </label>
-      <input
-        id="email"
-        type="email"
-        formControlName="email"
-        placeholder="Enter email address"
-        autocomplete="email"
-        class="form-input"
-        [class.error]="isFieldInvalid('email')"
-        [class.success]="email?.valid && email?.touched"
-      />
-      @if (isFieldInvalid('email')){
-      <div class="error-message">
-        {{ getErrorMessage('email') }}
-      </div>
-      }
-    </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-sm:gap-8">
+        <!-- Name Input using your reusable component -->
+        <app-form-input [config]="nameConfig" [control]="$any(name)" formControlName="name">
+        </app-form-input>
 
-    <!-- Department -->
-    <div>
-      <label for="department" class="form-label">
-        Department <span class="text-red-500">*</span>
-      </label>
-      <select
-        id="department"
-        formControlName="department"
-        class="form-select"
-        [class.error]="isFieldInvalid('department')"
-        [class.success]="department?.valid && department?.touched"
-      >
-        <option value="" disabled>Select department</option>
-        <option *ngFor="let dept of departments" [value]="dept.value">
-          {{ dept.label }}
-        </option>
-      </select>
-      <div class="error-message" *ngIf="isFieldInvalid('department')">
-        {{ getErrorMessage('department') }}
+        <!-- Email Input using your reusable component -->
+        <app-form-input [config]="emailConfig" [control]="$any(email)" formControlName="email">
+        </app-form-input>
       </div>
     </div>
 
-    <!-- Date of Joining -->
-    <div>
-      <label for="dateOfJoining" class="form-label">
-        Date of Joining <span class="text-red-500">*</span>
-      </label>
-      <input
-        id="dateOfJoining"
-        type="date"
-        formControlName="dateOfJoining"
-        [max]="getCurrentDate()"
-        class="form-input"
-        [class.error]="isFieldInvalid('dateOfJoining')"
-        [class.success]="dateOfJoining?.valid && dateOfJoining?.touched"
-      />
-      <div class="error-message" *ngIf="isFieldInvalid('dateOfJoining')">
-        {{ getErrorMessage('dateOfJoining') }}
+    <div class="mt-8 space-y-4">
+      <div class="border-b pb-2 text-sm flex items-center gap-2 text-gray-600 dark:text-gray-300">
+        <mat-icon
+          svgIcon="heroicons_outline:briefcase"
+          class="!text-gray-600 dark:!text-gray-300 !h-4"
+        />
+        <p class="uppercase">Employment Details</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 max-sm:gap-8 gap-4">
+        <!-- Department Dropdown using your reusable component -->
+        <app-form-input
+          [config]="departmentConfig"
+          [control]="$any(department)"
+          formControlName="department"
+        >
+        </app-form-input>
+
+        <!-- Date of Joining using your reusable component -->
+        <app-form-input
+          [config]="dateOfJoiningConfig"
+          [control]="$any(dateOfJoining)"
+          formControlName="dateOfJoining"
+        >
+        </app-form-input>
       </div>
     </div>
 
-    <!-- Form Actions -->
-    <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-      <button type="button" (click)="closeDialog()">Cancel</button>
+    <div class="flex w-full justify-end mt-16 items-center gap-4">
       <button
+        class="h-10 px-4 rounded-sm font-semibold cursor-pointer"
+        type="button"
+        (click)="closeDialog()"
+      >
+        Cancel
+      </button>
+      <button
+        class="bg-primary text-white h-10 px-4 rounded-sm font-semibold cursor-pointer disabled:bg-primary/50"
         type="submit"
         [disabled]="employeeForm.invalid"
-        class="btn btn-primary"
         [class.disabled]="employeeForm.invalid"
       >
-        Add Member
+        Save Member
       </button>
     </div>
   </form>

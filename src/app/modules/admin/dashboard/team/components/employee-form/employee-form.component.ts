@@ -1,59 +1,95 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { Component, ViewEncapsulation } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DialogService } from '@ancode/components/dialog/dialog.service';
+import { FormInputService, InputConfig } from '@ancode/components/input/input.service';
+import { endOfDay } from 'date-fns';
+import { EmployeeService } from '../../team.service';
 
 @Component({
   selector: 'app-employee-form',
   templateUrl: './employee-form.component.html',
   standalone: false,
+  encapsulation: ViewEncapsulation.None,
 })
 export class EmployeeFormComponent {
   employeeForm: FormGroup;
 
-  departments = [
-    { value: 'hr', label: 'HR' },
-    { value: 'engineering', label: 'Engineering' },
-    { value: 'sales', label: 'Sales' },
-    { value: 'marketing', label: 'Marketing' },
-    { value: 'finance', label: 'Finance' },
-    { value: 'operations', label: 'Operations' },
-  ];
+  // Input configurations using your service
+  nameConfig!: InputConfig;
+  emailConfig!: InputConfig;
+  departmentConfig!: InputConfig;
+  dateOfJoiningConfig!: InputConfig;
 
-  constructor(private _dialogService: DialogService, private fb: FormBuilder) {
+  isSubmitting: boolean = false;
+
+  constructor(
+    private _dialogService: DialogService,
+    private fb: FormBuilder,
+    private _formInputService: FormInputService,
+    private _employeeService: EmployeeService
+  ) {
     this.employeeForm = this.fb.group({
-      name: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(3),
-          Validators.pattern(/^[a-zA-Z\s]+$/), // Only letters and spaces
-        ],
+      name: this._formInputService.createControl('', [
+        Validators.required,
+        Validators.minLength(3),
+        this._formInputService.patternValidator(
+          /^[a-zA-Z\s]+$/,
+          'Name should contain only letters and spaces'
+        ),
+      ]),
+      email: this._formInputService.createControl('', [Validators.required, Validators.email]),
+      department: this._formInputService.createControl('', [Validators.required]),
+      dateOfJoining: this._formInputService.createControl('', [Validators.required]),
+    });
+
+    // this.employeeForm.valueChanges.subscribe((values) => {
+    //   console.log('Form values changed:', values);
+    // });
+
+    this.setupInputConfigs();
+  }
+
+  private setupInputConfigs(): void {
+    this.nameConfig = this._formInputService.getTextInputConfig({
+      label: 'Name',
+      placeholder: 'Enter full name',
+      required: true,
+      validators: [
+        Validators.required,
+        Validators.minLength(3),
+        this._formInputService.patternValidator(/^[a-zA-Z\s]+$/),
       ],
-      email: ['', [Validators.required, Validators.email]],
-      department: ['', Validators.required],
-      dateOfJoining: ['', [Validators.required, this.futureDateValidator]],
+    });
+
+    this.emailConfig = this._formInputService.getEmailInputConfig({
+      label: 'Email',
+      placeholder: 'Enter email address',
+      required: true,
+    });
+
+    this.departmentConfig = this._formInputService.getDropdownInputConfig({
+      label: 'Department',
+      placeholder: 'Select Department',
+      required: true,
+      options: [
+        { value: 'hr', label: 'HR' },
+        { value: 'engineering', label: 'Engineering' },
+        { value: 'sales', label: 'Sales' },
+        { value: 'marketing', label: 'Marketing' },
+        { value: 'finance', label: 'Finance' },
+        { value: 'operations', label: 'Operations' },
+      ],
+    });
+
+    this.dateOfJoiningConfig = this._formInputService.getDateInputConfig({
+      label: 'Date of Joining',
+      placeholder: 'Select date',
+      required: true,
+      maxDate: endOfDay(new Date()),
     });
   }
 
-  // Custom validator to prevent future dates
-  futureDateValidator(control: any) {
-    if (!control.value) {
-      return null;
-    }
-
-    const selectedDate = new Date(control.value);
-    const today = new Date();
-    today.setHours(23, 59, 59, 999); // Set to end of today to allow today's date
-
-    if (selectedDate > today) {
-      return { futureDate: { value: control.value } };
-    }
-
-    return null;
-  }
-
-  // Getter methods for easy access to form controls in template
+  // Access to form controls
   get name() {
     return this.employeeForm.get('name');
   }
@@ -68,62 +104,19 @@ export class EmployeeFormComponent {
   }
 
   onSubmit() {
-    if (this.employeeForm.valid) {
-      const formData = this.employeeForm.value;
-      console.log('Form submitted:', formData);
-      this.employeeForm.reset();
-    } else {
-      // Mark all fields as touched to show validation errors
-      this.employeeForm.markAllAsTouched();
+    try {
+      if (this.employeeForm.valid) {
+        const formData = this.employeeForm.value;
+        console.log('Form submitted:', formData);
+        this._employeeService.createEmployee(formData).subscribe();
+        this.employeeForm.reset();
+      } else {
+        this.employeeForm.markAllAsTouched();
+      }
+    } catch (err) {
+      // console.error('Error submitting)
+    } finally {
     }
-  }
-
-  // Helper method to get error messages
-  getErrorMessage(fieldName: string): string {
-    const field = this.employeeForm.get(fieldName);
-
-    if (field?.hasError('required')) {
-      return `${this.getFieldDisplayName(fieldName)} is required`;
-    }
-
-    if (fieldName === 'name' && field?.hasError('minlength')) {
-      return 'Name must be at least 3 characters long';
-    }
-
-    if (fieldName === 'name' && field?.hasError('pattern')) {
-      return 'Name should contain only letters and spaces';
-    }
-
-    if (fieldName === 'email' && field?.hasError('email')) {
-      return 'Please enter a valid email address';
-    }
-
-    if (fieldName === 'dateOfJoining' && field?.hasError('futureDate')) {
-      return 'Date of joining cannot be in the future';
-    }
-
-    return '';
-  }
-
-  private getFieldDisplayName(fieldName: string): string {
-    const fieldNames: { [key: string]: string } = {
-      name: 'Name',
-      email: 'Email',
-      department: 'Department',
-      dateOfJoining: 'Date of Joining',
-    };
-    return fieldNames[fieldName] || fieldName;
-  }
-
-  // Helper method to check if field should show error
-  isFieldInvalid(fieldName: string): boolean {
-    const field = this.employeeForm.get(fieldName);
-    return !!(field && field.invalid && field.touched);
-  }
-
-  // Helper method to get current date in YYYY-MM-DD format for max attribute
-  getCurrentDate(): string {
-    return new Date().toISOString().split('T')[0];
   }
 
   closeDialog(): void {

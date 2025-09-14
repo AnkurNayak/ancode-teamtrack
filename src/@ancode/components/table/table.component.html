@@ -1,1 +1,84 @@
-<div>table</div>
+<div class="h-full overflow-auto border rounded-lg bg-card">
+  <table class="min-w-full table-auto border-collapse whitespace-nowrap">
+    <thead class="bg-accent sticky top-0 z-10 h-11">
+      <tr>
+        <th class="px-4 text-left border-b w-10">
+          <input type="checkbox" [checked]="isAllSelected(rows)" (change)="selectAll(rows)" />
+        </th>
+
+        @for (column of columns; track column.key) { @if (column.key !== 'Select') {
+        <th class="text-left font-semibold text-sm px-4 border-b">
+          {{ column.label }}
+        </th>
+        } }
+        <th class="text-left font-semibold text-sm px-4 border-b">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @if (rows.length === 0 || columns.length === 0){
+      <tr>
+        <td
+          class="text-center p-4 text-gray-500 text-xl italic"
+          [attr.colspan]="columns.length + 2"
+        >
+          <span class="flex items-center justify-center gap-2"
+            ><mat-icon svgIcon="heroicons_outline:database" class="!h-12 !w-12" /> No records
+            found</span
+          >
+        </td>
+      </tr>
+      } @else { @for (row of rows; track row.id; let isLast = $last) {
+      <tr class="hover:bg-muted transition-all duration-300">
+        <td class="px-4 w-10 border-b">
+          <input
+            type="checkbox"
+            [checked]="isRowSelected(row.id)"
+            (change)="toggleRowSelection(row.id)"
+          />
+        </td>
+
+        @for (column of columns; track column.key) { @if (column.key !== 'Select') {
+        <td class="text-sm h-10 border-b px-4" [style.width.%]="100 / columns.length">
+          @if (column.type === 'badge') {
+          <span
+            class="flex px-2 py-1 text-xs font-semibold rounded w-24 items-center justify-center"
+            [ngClass]="getBadgeClass(column.key, row[column.key])"
+          >
+            {{ row[column.key] | titlecase }}
+          </span>
+          } @else {
+          {{ row[column.key] }}
+          }
+        </td>
+        } }
+
+        <td class="text-sm text-gray-800 whitespace-nowrap px-4 border-b">
+          <button
+            class="p-0.5 rounded flex items-center justify-center cursor-pointer hover:bg-accent relative"
+            (click)="toggleActionDropdown(row.id)"
+          >
+            <mat-icon svgIcon="heroicons_outline:dots-horizontal" class="!h-4 dark:!text-white" />
+            @if (actionRowId === row.id){
+            <div
+              class="absolute bg-card z-20 shadow-lg border min-w-32 right-0 top-full rounded-lg flex flex-col p-1"
+            >
+              <span
+                class="px-4 py-2 flex hover:bg-accent rounded-sm text-sm gap-1 font-medium items-center"
+                (click)="onEdit(row)"
+                ><mat-icon svgIcon="heroicons_outline:pencil-alt" class="!h-4 !w-4" /> Edit</span
+              >
+              <span
+                class="px-4 py-2 flex hover:bg-accent rounded-sm text-sm gap-1 font-medium items-center text-red-500"
+                (click)="onDelete(row)"
+                ><mat-icon svgIcon="heroicons_outline:trash" class="!h-4 !w-4" /> Delete</span
+              >
+            </div>
+            }
+          </button>
+        </td>
+      </tr>
+      } }
+    </tbody>
+  </table>
+</div>
