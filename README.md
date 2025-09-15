@@ -4,6 +4,8 @@ This project was generated using [Angular CLI](https://github.com/angular/angula
 
 Angular-based employee management application that supports viewing, filtering, paginating, and exporting employee records. It features a light/dark mode toggle and uses local storage for data persistence.
 
+## Live Server
+[https://team-track.netlify.app/](https://team-track.netlify.app/)
 ## Development server
 
 To start a local development server, run:
