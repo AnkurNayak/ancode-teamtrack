@@ -9,11 +9,21 @@ export const routes: Routes = [
       layout: 'classic',
     },
     children: [
+      // Default redirect
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'dashboard',
+      },
       {
         path: 'dashboard',
         loadChildren: () =>
           import('app/modules/admin/dashboard/dashboard.module').then((m) => m.DashboardModule),
       },
     ],
+  },
+  {
+    path: '**',
+    redirectTo: 'dashboard',
   },
 ];

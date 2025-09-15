@@ -150,8 +150,13 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event) {
-    if (this.isFilterOpen && !this._elementRef.nativeElement.contains(event.target as Node)) {
+  onDocumentClick(event: Event): void {
+    const target = event.target as HTMLElement;
+
+    const clickedInsideDropdown = target.closest('.filter-dropdown');
+    const clickedFilterButton = target.closest('.filter-button');
+
+    if (!clickedInsideDropdown && !clickedFilterButton) {
       this.isFilterOpen = false;
     }
   }
