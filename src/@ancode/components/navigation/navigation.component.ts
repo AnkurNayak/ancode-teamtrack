@@ -80,6 +80,12 @@ export class NavigationComponent implements OnInit, OnDestroy {
    * Update overlay based on navigation state and device width
    * @private
    */
+
+  onLinkClick(): void {
+    if (this.isSmDevice) {
+      this._layoutConfigService.toggleNavigation(false);
+    }
+  }
   private _updateOverlay(): void {
     // For small devices, display overlay if navigation is opened
     if (this.isSmDevice && this.opened) {

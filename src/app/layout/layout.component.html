@@ -1,14 +1,7 @@
-<!-- ----------------------------------------------------------------------------------------------------- -->
-<!-- Empty layout -->
-<!-- ----------------------------------------------------------------------------------------------------- -->
-@if (config.layout === 'empty') {
-  <empty-layout></empty-layout>}
-
-<!-- ----------------------------------------------------------------------------------------------------- -->
-<!-- Dashboard Layouts -->
-<!-- ----------------------------------------------------------------------------------------------------- -->
+@if (isLoading){ <app-loading></app-loading>} @else { @if (config.layout === 'empty') {
+<empty-layout></empty-layout>}
 
 <!-- Classic -->
- @if (config.layout === 'classic'){
-     <classic-layout ></classic-layout>
- }
+@if (config.layout === 'classic'){
+<classic-layout></classic-layout>
+} }

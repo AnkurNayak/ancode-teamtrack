@@ -26,11 +26,11 @@ export class LayoutConfigService {
     @Inject(DOCUMENT) private _document: any,
     private _mediaQueryService: MediaQueryService
   ) {
-    const storageTheme = this._storageService.getItem('theme') as Theme;
+    const storageTheme = this._storageService.getItem('theme');
     // console.log('theme', storageTheme);
     const initConfig: AppConfig = {
       ...this.defaultConfig,
-      theme: storageTheme,
+      theme: storageTheme || 'dark',
       navigation: this._mediaQueryService.currentWidth >= 900,
     };
     // console.log('config', initConfig);

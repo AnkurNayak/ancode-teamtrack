@@ -12,6 +12,8 @@ import { Subject, takeUntil } from 'rxjs';
 })
 export class LayoutComponent implements OnInit, OnDestroy {
   config: AppConfig;
+
+  isLoading: boolean = true;
   private _unsubscribeAll: Subject<any> = new Subject<any>();
 
   /**
@@ -34,6 +36,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
         this.config = config;
         this._LayoutConfigService.updateTheme();
       });
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 1000);
   }
 
   ngOnDestroy(): void {

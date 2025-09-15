@@ -5,6 +5,7 @@
     <mat-icon svgIcon="teamtrack_logo" class="!text-primary !h-10 !w-10 !stroke-2"></mat-icon>
     <h1>Team Track</h1>
   </div>
+
   <div class="h-24 border-b flex items-center px-4 gap-3">
     <div class="w-12 h-12 bg-chart-3/10 rounded-full flex items-center justify-center text-chart-3">
       <mat-icon svgIcon="heroicons_outline:user" />
@@ -14,12 +15,16 @@
       <span class="text-xs text-gray-500">Administrator</span>
     </div>
   </div>
+
   <div class="flex flex-col mt-2 p-2 gap-2">
     <a
       routerLink="/dashboard"
       routerLinkActive="active-link"
-      class="flex px-4 py-2 hover:bg-accent cursor-pointer font-semibold items-center gap-2 rounded-md"
       [routerLinkActiveOptions]="{ exact: true }"
+      class="flex px-4 py-2 hover:bg-chart-5/10 hover:text-black dark:hover:text-white transition-all duration-200 cursor-pointer font-semibold items-center gap-2 rounded-md"
+      #dashboardRla="routerLinkActive"
+      [ngClass]="{ 'bg-chart-5 text-white': dashboardRla.isActive }"
+      (click)="onLinkClick()"
     >
       <mat-icon svgIcon="heroicons_outline:home" class="!h-5"></mat-icon>
       Home
@@ -27,7 +32,11 @@
     <a
       routerLink="/dashboard/team"
       routerLinkActive="active-link"
-      class="flex px-4 py-2 hover:bg-accent cursor-pointer font-semibold items-center gap-2 rounded-md"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="flex px-4 py-2 hover:bg-chart-5/10 hover:text-black dark:hover:text-white transition-all duration-200 cursor-pointer font-semibold items-center gap-2 rounded-md"
+      #teamRla="routerLinkActive"
+      [ngClass]="{ 'bg-chart-5 text-white': teamRla.isActive }"
+      (click)="onLinkClick()"
     >
       <mat-icon svgIcon="heroicons_outline:office-building" class="!h-5"></mat-icon>
       Team Management
