@@ -17,6 +17,9 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "allowedCommonJsDependencies": [
+              "file-saver"
+            ],
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
@@ -33,9 +36,12 @@
               "src/styles.scss"
             ],
             "server": "src/main.server.ts",
-            "outputMode": "server",
+         
             "ssr": {
               "entry": "src/server.ts"
+            },
+             "prerender": {
+              "discoverRoutes": false
             }
           },
           "configurations": {

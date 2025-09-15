@@ -14,7 +14,7 @@ import { Employee } from './team.types';
 import { format, parseISO } from 'date-fns';
 import { SortEvent } from '@ancode/components/table/table.component';
 import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
-import * as FileSaver from 'file-saver';
+import * as FileSaver from 'file-saver-es';
 import * as XLSX from 'xlsx';
 
 @Component({
