@@ -1,0 +1,40 @@
+<div class="flex flex-col space-y-4 p-4">
+  <!-- Header -->
+  <div class="flex items-center justify-between">
+    <h2 class="text-lg font-semibold">Are you sure?</h2>
+    <button
+      (click)="closeDialog()"
+      class="flex rounded-full h-8 w-8 items-center justify-center hover:bg-accent cursor-pointer"
+      type="button"
+    >
+      <mat-icon svgIcon="heroicons_outline:x"></mat-icon>
+    </button>
+  </div>
+
+  <!-- Message -->
+  <div>
+    <p class="text-sm text-gray-500">
+      This action will permanently delete
+      <strong>{{ employeeData.name }}</strong> from your team. This cannot be undone.
+    </p>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex justify-end space-x-3 pt-2">
+    <button
+      (click)="closeDialog()"
+      class="px-4 py-2 rounded-md text-sm cursor-pointer"
+      type="button"
+    >
+      Cancel
+    </button>
+
+    <button
+      class="px-4 py-2 rounded-md text-sm bg-red-600 text-white hover:bg-red-700 cursor-pointer"
+      type="button"
+      (click)="confirmDelete()"
+    >
+      Delete
+    </button>
+  </div>
+</div>

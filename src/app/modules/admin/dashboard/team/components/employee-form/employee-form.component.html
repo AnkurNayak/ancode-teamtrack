@@ -2,10 +2,22 @@
   <div class="flex pt-6 px-6 w-full justify-between items-center">
     <div>
       <div class="flex items-center gap-2">
+        @if (isEditMode){
+        <mat-icon svgIcon="heroicons_outline:users" class="!text-primary" />
+        <h4 class="text-xl font-medium">Update Member</h4>
+        } @else {
         <mat-icon svgIcon="heroicons_outline:user-add" class="!text-primary" />
         <h4 class="text-xl font-medium">Add Team Member</h4>
+        }
       </div>
+
+      @if (isEditMode){
+      <p class="text-xs text-gray-500">
+        Fill in the details below to update an existing team member.
+      </p>
+      } @else {
       <p class="text-xs text-gray-500">Fill in the details below to add a new team member.</p>
+      }
     </div>
 
     <button
@@ -80,7 +92,7 @@
         [disabled]="employeeForm.invalid"
         [class.disabled]="employeeForm.invalid"
       >
-        Save Member
+        @if (isEditMode) { Update Member } @else { Save member }
       </button>
     </div>
   </form>

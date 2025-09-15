@@ -95,20 +95,20 @@ export class EmployeeService {
 
         // Pagination
         const totalItems = updatedEmployeeList.length;
-        let paginatedList = updatedEmployeeList;
+        let exportedList = updatedEmployeeList;
 
         const currentPage = filters?.page || 1;
         const pageSize = filters?.pageSize || totalItems;
 
         if (filters?.page && filters?.pageSize) {
           const startIndex = (currentPage - 1) * pageSize;
-          paginatedList = updatedEmployeeList.slice(startIndex, startIndex + pageSize);
+          exportedList = updatedEmployeeList.slice(startIndex, startIndex + pageSize);
         }
 
         const totalPages = pageSize ? Math.ceil(totalItems / pageSize) : 1;
 
         return {
-          data: paginatedList,
+          data: exportedList,
           pagination: {
             currentPage,
             pageSize,
@@ -120,25 +120,53 @@ export class EmployeeService {
     );
   }
 
-  getEmployeeById(id: string): Observable<Employee | undefined> {
-    return this._employees$.pipe(
-      map((employees) => employees.find((employee) => employee.id === id))
+  updateEmployee(
+    id: string,
+    employeeData: Partial<Omit<Employee, 'id' | 'createdAt' | 'updatedAt'>>
+  ): Observable<Employee | null> {
+    const currentEmployees = this._getStorageEmployees();
+    const employeeIndex = currentEmployees.findIndex((employee) => employee.id === id);
+
+    if (employeeIndex === -1) {
+      return of(null);
+    }
+
+    // Updated employee withupdatedAt
+    const updatedEmployee: Employee = {
+      ...currentEmployees[employeeIndex],
+      ...employeeData,
+      updatedAt: new Date(),
+    };
+    const updatedEmployees = currentEmployees.map((employee, index) =>
+      index === employeeIndex ? updatedEmployee : employee
     );
+
+    this._saveStorageEmployee(updatedEmployees);
+    this._refetchEmployeeData();
+
+    return of(updatedEmployee);
   }
+
+  // getEmployeeById(id: string): Observable<Employee | undefined> {
+  //   return this._employees$.pipe(
+  //     map((employees) => employees.find((employee) => employee.id === id))
+  //   );
+  // }
 
   deleteEmployeeById(id: string): Observable<boolean> {
     return this._employees$.pipe(
       map((employees) => {
-        const employeeExists = employees.some((employee) => employee.id === id);
+        const employeeIndex = employees.findIndex((employee) => employee.id === id);
 
-        if (employeeExists) {
-          this._storageService.removeItemFromArr(this.STORAGE_KEY, 'id', id);
-          // Update triger
-          const updatedEmployees = employees.filter((employee) => employee.id !== id);
-          this._employees$.next(updatedEmployees);
+        if (employeeIndex === -1) {
+          return false;
         }
+        const updatedEmployees = employees.filter((employee) => employee.id !== id);
 
-        return employeeExists;
+        this._saveStorageEmployee(updatedEmployees);
+        this._refetchEmployeeData();
+
+        return true;
       })
     );
   }

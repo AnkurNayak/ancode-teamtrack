@@ -13,6 +13,7 @@ import { EmployeeService } from './team.service';
 import { Employee } from './team.types';
 import { format, parseISO } from 'date-fns';
 import { SortEvent } from '@ancode/components/table/table.component';
+import { DeleteModalComponent } from './components/delete-modal/delete-modal.component';
 
 @Component({
   selector: 'employees',
@@ -158,7 +159,7 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   openDialog() {
-    this._dialogService.openDialog(EmployeeFormComponent);
+    this._dialogService.openDialog(EmployeeFormComponent, { mode: 'employee-create' });
   }
 
   closeDialog() {
@@ -167,13 +168,11 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
 
   /* Table actions */
   openEditMode(row: any) {
-    alert(`Open edit dialog for: ${row.name}`);
+    // console.log(row);
+    this._dialogService.openDialog(EmployeeFormComponent, { data: row, mode: 'employee-edit' });
   }
 
   openDeleteDialog(row: any) {
-    const confirmed = confirm(`Are you sure you want to delete: ${row.name}?`);
-    if (confirmed) {
-      console.log('Deleting', row);
-    }
+    this._dialogService.openDialog(DeleteModalComponent, { data: row });
   }
 }

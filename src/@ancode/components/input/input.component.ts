@@ -45,6 +45,9 @@ export class InputComponent implements ControlValueAccessor, OnDestroy {
    */
   writeValue(value: any): void {
     this.value = value || '';
+    if (this.config.type === 'date' && value) {
+      this.selectedDate = new Date(value);
+    }
   }
 
   registerOnChange(fn: (value: any) => void): void {
@@ -63,6 +66,7 @@ export class InputComponent implements ControlValueAccessor, OnDestroy {
    * Calender
    */
   get selectedDateLabel(): string {
+    // console.log(this.selectedDate);
     return this.selectedDate ? format(this.selectedDate, 'MMM dd, yyyy') : '';
   }
   toggleCalendar(event: Event) {

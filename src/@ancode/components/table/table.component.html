@@ -2,9 +2,9 @@
   <table class="min-w-full table-auto border-collapse whitespace-nowrap">
     <thead class="bg-accent sticky top-0 z-10 h-11">
       <tr>
-        <th class="px-4 text-left border-b w-10">
+        <!-- <th class="px-4 text-left border-b w-10">
           <input type="checkbox" [checked]="isAllSelected(rows)" (change)="selectAll(rows)" />
-        </th>
+        </th> -->
 
         @for (column of columns; track column.key) { @if (column.key !== 'Select') {
         <th
@@ -35,24 +35,24 @@
       @if (rows.length === 0 || columns.length === 0){
       <tr>
         <td
-          class="text-center p-4 text-gray-500 text-xl italic"
+          class="text-center p-4 text-gray-500 text-sm italic"
           [attr.colspan]="columns.length + 2"
         >
           <span class="flex items-center justify-center gap-2">
-            <mat-icon svgIcon="heroicons_outline:database" class="!h-12 !w-12" />
+            <mat-icon svgIcon="heroicons_outline:database" />
             No records found
           </span>
         </td>
       </tr>
       } @else { @for (row of rows; track row.id; let isLast = $last) {
       <tr class="hover:bg-muted transition-all duration-300">
-        <td class="px-4 w-10 border-b">
+        <!-- <td class="px-4 w-10 border-b">
           <input
             type="checkbox"
             [checked]="isRowSelected(row.id)"
             (change)="toggleRowSelection(row.id)"
           />
-        </td>
+        </td> -->
 
         @for (column of columns; track column.key) { @if (column.key !== 'Select') {
         <td class="text-sm h-10 border-b px-4" [style.width.%]="100 / columns.length">
