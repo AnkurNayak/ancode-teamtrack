@@ -7,12 +7,21 @@
       <h1 class="text-3xl font-bold">Team Management</h1>
       <p class="text-gray-500">Manage your team members and their roles</p>
     </div>
-    <button
-      class="rounded-lg bg-primary font-semibold text-white h-10 px-4 flex items-center"
-      (click)="openDialog()"
-    >
-      <mat-icon svgIcon="heroicons_outline:plus" class="!h-4" /> Add Member
-    </button>
+    <div class="flex items-center gap-4">
+      <button
+        class="rounded-lg bg-chart-5 disabled:bg-accent hover:bg-chart-5/80 font-semibold text-white h-10 px-4 flex items-center cursor-pointer transition-all duration-300"
+        [disabled]="donwloadableData === 0"
+        (click)="downloadEmployeeData()"
+      >
+        <mat-icon svgIcon="heroicons_outline:download" class="!h-4" /> Download
+      </button>
+      <button
+        class="rounded-lg bg-primary font-semibold hover:bg-primary/80 text-white h-10 px-4 flex items-center cursor-pointer transition-all duration-300"
+        (click)="openDialog()"
+      >
+        <mat-icon svgIcon="heroicons_outline:plus" class="!h-4" /> Add Member
+      </button>
+    </div>
   </div>
   <div class="p-4 sm:p-6 flex flex-col space-y-4">
     <div class="flex items-center gap-4">

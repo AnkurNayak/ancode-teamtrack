@@ -6,19 +6,27 @@
     <mat-icon>menu</mat-icon>
   </button>
 
-  @if (theme === 'dark') {
-  <button
-    (click)="switchTheme('light')"
-    class="flex items-center justify-center cursor-pointer h-8 w-8 rounded-full bg-accent border"
-  >
-    <mat-icon svgIcon="heroicons_outline:sun" class="!h-5 !w-5" />
-  </button>
-  } @else {
-  <button
-    (click)="switchTheme('dark')"
-    class="flex items-center justify-center cursor-pointer h-8 w-8 rounded-full bg-accent border"
-  >
-    <mat-icon svgIcon="heroicons_outline:moon" class="!h-5 !w-5" />
-  </button>
-  }
+  <div class="flex items-center gap-4">
+    <a
+      href="https://github.com/AnkurNayak/ancode-teamtrack"
+      target="_blank"
+      class="h-8 w-8 flex items-center"
+      ><mat-icon svgIcon="heroicons_outline:github" class="!h-5 !w-5"
+    /></a>
+    @if (theme === 'dark') {
+    <button
+      (click)="switchTheme('light')"
+      class="flex items-center justify-center cursor-pointer h-8 w-8 rounded-full bg-accent border"
+    >
+      <mat-icon svgIcon="heroicons_outline:sun" class="!h-5 !w-5" />
+    </button>
+    } @else {
+    <button
+      (click)="switchTheme('dark')"
+      class="flex items-center justify-center cursor-pointer h-8 w-8 rounded-full bg-accent border"
+    >
+      <mat-icon svgIcon="heroicons_outline:moon" class="!h-5 !w-5" />
+    </button>
+    }
+  </div>
 </div>
