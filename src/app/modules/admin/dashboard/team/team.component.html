@@ -32,16 +32,23 @@
           class="absolute border min-w-48 right-0 top-full rounded-lg bg-card flex flex-col shadow-lg z-50 filter-dropdown"
           [class.open]="isFilterOpen"
         >
-          <h4 class="uppercase font-semibold border-b px-4 py-2">Filter By</h4>
+          <div class="flex items-center text-sm">
+            <h4 class="uppercase font-semibold border-b px-4 py-2">Filter By</h4>
+            <button
+              class="px-4 rounded font-medium cursor-pointer"
+              (click)="clearDepartmentFilters()"
+            >
+              Clear All
+            </button>
+          </div>
           <div class="p-1 flex w-full flex-col max-h-64 overflow-y-auto">
             @for (department of departMents; track department.value) {
-            <label
-              class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded cursor-pointer"
-            >
+            <label class="flex items-center gap-2 px-4 py-2 hover:bg-accent rounded cursor-pointer">
               <input
                 type="checkbox"
                 name="department"
                 [value]="department.value"
+                [checked]="selectedDepartments.includes(department.value)"
                 (change)="onDepartmentSelect($event)"
                 class="rounded"
               />

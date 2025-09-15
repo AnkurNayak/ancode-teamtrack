@@ -1,6 +1,13 @@
 import { DialogService } from '@ancode/components/dialog/dialog.service';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  HostListener,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 import { EmployeeFormComponent } from './components/employee-form/employee-form.component';
 import { EmployeeService } from './team.service';
 import { Employee } from './team.types';
@@ -16,6 +23,9 @@ import { SortEvent } from '@ancode/components/table/table.component';
 export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
   public isDialogOpen: boolean = false;
   public isFilterOpen: boolean = false;
+  private _searchSubject$ = new Subject<string>();
+  private _unsubscribeAll: Subject<void> = new Subject<void>();
+
   public departMents = [
     { value: 'hr', label: 'HR' },
     { value: 'engineering', label: 'Engineering' },
@@ -30,27 +40,39 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
     { key: 'email', label: 'Email' },
     { key: 'department', label: 'Department', type: 'badge' },
     { key: 'dateOfJoining', label: 'Date of Joining', sortable: true },
-    { key: 'createdAt', label: 'Created' },
-    { key: 'updatedAt', label: 'Updated' },
+    { key: 'createdAt', label: 'Created On' },
+    // { key: 'updatedAt', label: 'Updated' },
   ];
   tableRows: Employee[] = [];
 
   selectedDepartments: string[] = [];
   searchInput: string = '';
 
-  currentSortKey: string | null = null;
+  currentSortKey: 'name' | 'dateOfJoining' | undefined = undefined;
   currentSortOrder: 'asc' | 'desc' = 'asc';
 
-  private _unsubscribeAll: Subject<void> = new Subject<void>();
-
-  constructor(private _dialogService: DialogService, private _employeeService: EmployeeService) {}
+  constructor(
+    private _dialogService: DialogService,
+    private _employeeService: EmployeeService,
+    private _elementRef: ElementRef
+  ) {}
 
   /**
    * Hooks
    */
   ngOnInit(): void {
     // this._employeeService.getEmployees({ search: '', sortBy: 'dateOfJoining', sortOrder: 'asc' });
+    this.currentSortKey = 'name';
+    this.currentSortOrder = 'asc';
     this._loadEmployees();
+
+    // Search fn
+    this._searchSubject$
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this._unsubscribeAll))
+      .subscribe((searchValue) => {
+        this.searchInput = searchValue;
+        this._loadEmployees();
+      });
   }
 
   ngAfterViewInit(): void {}
@@ -58,16 +80,22 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnDestroy(): void {
     this._unsubscribeAll.next();
     this._unsubscribeAll.complete();
+    this._searchSubject$.complete();
   }
 
+  /**
+   * Observe any data change
+   * @param event
+   */
   onTableSort(event: SortEvent): void {
     const { column } = event;
     if (this.currentSortKey === column) {
       this.currentSortOrder = this.currentSortOrder === 'asc' ? 'desc' : 'asc';
     } else {
-      this.currentSortKey = column;
-      this.currentSortOrder = 'desc';
+      this.currentSortKey = column as 'name' | 'dateOfJoining';
+      this.currentSortOrder = 'asc';
     }
+    this._loadEmployees();
   }
 
   /* Employee list*/
@@ -75,17 +103,18 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
     this._employeeService
       .getEmployees({
         search: this.searchInput,
-        department: this.selectedDepartments.length > 0 ? this.selectedDepartments[0] : undefined,
-        sortBy: 'dateOfJoining',
-        sortOrder: 'asc',
+        department: this.selectedDepartments,
+        sortBy: this.currentSortKey,
+        sortOrder: this.currentSortOrder,
       })
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((response) => {
+        // console.log('response', response);
         this.tableRows = response.data.map((emp) => ({
           ...emp,
-          createdAt: format(parseISO(emp.createdAt.toString()), 'PPP p'),
-          updatedAt: format(parseISO(emp.updatedAt.toString()), 'PPP p'),
-          dateOfJoining: format(parseISO(emp.dateOfJoining), 'PPP'),
+          createdAt: format(parseISO(emp.createdAt.toString()), 'MMM do, yyyy'),
+          updatedAt: format(parseISO(emp.updatedAt.toString()), 'MMM do, yyyy'),
+          dateOfJoining: format(parseISO(emp.dateOfJoining), 'MMM do, yyyy'),
         }));
       });
   }
@@ -94,13 +123,34 @@ export class TeamComponent implements OnInit, AfterViewInit, OnDestroy {
    * Search
    */
   onSearchChange(searchValue: string): void {
-    this.searchInput = searchValue;
-    console.log('Search value:', searchValue);
+    this._searchSubject$.next(searchValue);
   }
 
   /* Filter */
   onDepartmentSelect(event: any): void {
-    this.selectedDepartments = [event.target.value];
+    const departmentValue = event.target.value;
+    const isChecked = event.target.checked;
+    if (isChecked) {
+      this.selectedDepartments = [...this.selectedDepartments, departmentValue];
+    } else {
+      this.selectedDepartments = this.selectedDepartments.filter(
+        (dept) => dept !== departmentValue
+      );
+    }
+
+    this._loadEmployees();
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    if (this.isFilterOpen && !this._elementRef.nativeElement.contains(event.target as Node)) {
+      this.isFilterOpen = false;
+    }
+  }
+  /* Clear filter */
+  clearDepartmentFilters(): void {
+    this.selectedDepartments = [];
+    this._loadEmployees();
   }
 
   openFilter() {

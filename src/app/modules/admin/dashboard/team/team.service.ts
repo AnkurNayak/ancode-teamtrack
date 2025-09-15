@@ -28,6 +28,11 @@ export class EmployeeService {
     this._employees$.next(employees);
   };
 
+  private _refetchEmployeeData(): void {
+    const employees = this._getStorageEmployees();
+    this._employees$.next(employees);
+  }
+
   createEmployee(
     employeeData: Omit<Employee, 'id' | 'createdAt' | 'updatedAt'>
   ): Observable<Employee> {
@@ -41,6 +46,7 @@ export class EmployeeService {
     const prevEmployees = this._getStorageEmployees();
     const updatedEmployees = [...prevEmployees, newEmployee];
     this._saveStorageEmployee(updatedEmployees);
+    this._refetchEmployeeData();
     return of(newEmployee);
   }
 
@@ -60,11 +66,11 @@ export class EmployeeService {
           );
         }
 
-        // Filter : department
-        if (filters?.department) {
-          const searchDepartment = filters.department.toLowerCase();
+        // Filter : department : multiple
+        if (filters?.department && filters.department.length > 0) {
+          const selectedDepartments = filters.department.map((dept) => dept.toLowerCase());
           updatedEmployeeList = updatedEmployeeList.filter((employee: Employee) =>
-            employee.department.toLowerCase().includes(searchDepartment)
+            selectedDepartments.includes(employee.department.toLowerCase())
           );
         }
 

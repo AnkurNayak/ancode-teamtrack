@@ -108,14 +108,22 @@ export class EmployeeFormComponent {
       if (this.employeeForm.valid) {
         const formData = this.employeeForm.value;
         console.log('Form submitted:', formData);
-        this._employeeService.createEmployee(formData).subscribe();
-        this.employeeForm.reset();
+
+        this._employeeService.createEmployee(formData).subscribe({
+          next: (newEmployee) => {
+            console.log('Employee created successfully:', newEmployee);
+            this._dialogService.closeDialog();
+            this.employeeForm.reset();
+          },
+          error: (error) => {
+            console.error('Error creating employee:', error);
+          },
+        });
       } else {
         this.employeeForm.markAllAsTouched();
       }
     } catch (err) {
-      // console.error('Error submitting)
-    } finally {
+      console.error('Error submitting form:', err);
     }
   }
 

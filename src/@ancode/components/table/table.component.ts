@@ -12,7 +12,7 @@ export interface SortEvent {
 export class TableComponent {
   @Input() columns: { key: string; label: string; type?: string; sortable?: boolean }[] = [];
   @Input() rows: any[] = [];
-  @Input() sortKey: string | null = null;
+  @Input() sortKey: any;
   @Input() sortOrder: 'asc' | 'desc' = 'asc';
   @Output() edit = new EventEmitter<any>();
   @Output() delete = new EventEmitter<any>();

@@ -134,11 +134,9 @@ export class InputComponent implements ControlValueAccessor, OnDestroy {
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event): void {
     const target = event.target as Element;
-    const isClickInsideDropdown =
-      target.closest('.dropdown-select') || target.closest('.dropdown-menu');
+    const isClickInsideDropdown = target.closest('.dropdown-select-option');
     if (!isClickInsideDropdown) {
       this.isDropDownOpen = false;
-      this.isCalendarOpen = false;
     }
   }
 

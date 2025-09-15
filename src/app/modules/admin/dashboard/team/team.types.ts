@@ -9,7 +9,7 @@ export interface Employee {
 }
 
 export interface EmployeeFilters {
-  department?: string;
+  department?: string[];
   search?: string;
   page?: number;
   pageSize?: number;
