@@ -111,7 +111,7 @@ app-dialog {
     input {
       width: 240px;
       border: 1px solid var(--input);
-      height: 40px;
+      height: 44px;
       border-radius: 8px;
       padding: 0 12px;
 
@@ -139,7 +139,7 @@ app-dialog {
     align-items: center;
     gap: 8px;
     border-radius: 8px;
-    height: 40px;
+    height: 44px;
     padding: 0 8px;
     border: 1px solid var(--input);
     @media (max-width: 640px) {
@@ -170,7 +170,7 @@ app-dialog {
 .dropdown-select {
   width: 240px;
   border: 1px solid var(--input);
-  height: 40px;
+  height: 44px;
   border-radius: 8px;
   padding: 0 12px;
   display: flex;
@@ -186,6 +186,7 @@ app-dialog {
 }
 
 .dropdown-menu {
+  border: 1px solid var(--border);
   position: absolute;
   overflow: hidden;
   top: calc(100% + 4px);
